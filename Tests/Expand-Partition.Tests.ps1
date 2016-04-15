@@ -55,12 +55,4 @@ Describe "Testing for Expand-Partition on PS$($PSVersionTable.PSVersion.Major)" 
         }
     }
 
-    Context "drive is in unknown state" {
-        Mock Out-GridView { return $null}
-        Mock Get-PartitionSupportedSize { return @{SizeMin = 0;SizeMax = ((Get-Partition -DriveLetter C).Size*2)} }
-        Mock Resize-Partition {Throw "Unknown Error when resizing partition"}
-        It "should throw because of unknown error" {
-            { Expand-Partition -ErrorAction Stop } | Should Throw
-        }
-    }
 }
