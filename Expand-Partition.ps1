@@ -1,5 +1,5 @@
 Function Expand-Partition {
-<#
+    <#
     .SYNOPSIS
         Simple tool to resize partition on Windows Server 2012+
     .DESCRIPTION
@@ -52,7 +52,8 @@ Function Expand-Partition {
             }
 
             Try {
-                $OS = Get-CimInstance -ClassName Win32_OperatingSystem @CimSplat -ErrorAction Stop | Select -ExpandProperty Caption
+                $CimSession = New-CimSession @CimSplat -ErrorAction Stop
+                $OS = Get-CimInstance -ClassName Win32_OperatingSystem -CimSession $CimSession -ErrorAction Stop | Select -ExpandProperty Caption
             }
             Catch {
                 Write-Error "Unable to get OS for $Computer because ""$($_)""" -ErrorAction Stop
@@ -63,8 +64,8 @@ Function Expand-Partition {
             }
 
             Write-Verbose "$(Get-Date): Select Partitions"
+            
             #Rescan disks
-            $CimSession = New-CimSession @CimSplat
             Update-HostStorageCache -CimSession $CimSession
 
             #Identify disks with unallocated space
